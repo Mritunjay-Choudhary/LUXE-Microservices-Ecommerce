@@ -1,0 +1,63 @@
+services:
+  auth-service:
+    build: ./backend/services/auth-service
+    env_file:
+      - ./backend/services/auth-service/.env
+
+  product-service:
+    build: ./backend/services/product-service
+    env_file:
+      - ./backend/services/product-service/.env
+
+  cart-service:
+    build: ./backend/services/cart-service
+    env_file:
+      - ./backend/services/cart-service/.env
+
+  order-service:
+    build: ./backend/services/order-service
+    env_file:
+      - ./backend/services/order-service/.env
+
+  review-service:
+    build: ./backend/services/review-service
+    env_file:
+      - ./backend/services/review-service/.env
+
+  api-gateway-1:
+    build: ./backend/api-gateway
+    env_file:
+      - ./backend/api-gateway/.env
+    environment:
+      - SERVER=1
+  
+  api-gateway-2:
+    build: ./backend/api-gateway
+    env_file:
+      - ./backend/api-gateway/.env
+    environment:
+      - SERVER=2
+
+  api-gateway-3:
+    build: ./backend/api-gateway
+    env_file:
+      - ./backend/api-gateway/.env
+    environment:
+      - SERVER=3
+
+  nginx:
+    image: nginx
+    ports:
+      - 8000:80
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_BASE_URL=http://localhost:8000
+    ports:
+      - 3000:80
+    depends_on:
+      - nginx
